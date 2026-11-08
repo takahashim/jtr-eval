@@ -1,0 +1,9 @@
+{
+  "task_id": "error-001",
+  "system": "sample-a",
+  "text": "## 何が起きているか\n\nリモートの `main` に、手元にないコミットがあります。そのまま push すると相手のコミットを上書きしてしまうため、Git が拒否しています。\n\n## 対処\n\n1. リモートの変更を取り込みます。\n   ```\n   git pull --rebase origin main\n   ```\n2. 競合が出たら解消し、`git rebase --continue` で続行します。\n3. もう一度 push します。\n\n## やってはいけないこと\n\n`git push --force` は他の人のコミットを消す可能性があります。共有ブランチでは使わないでください。\n",
+  "model": "sample",
+  "stop_reason": "ok",
+  "usage": null,
+  "generated_at": "2026-11-08T00:00:00Z"
+}

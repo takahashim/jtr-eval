@@ -1,0 +1,370 @@
+- id: review-001
+  category: review
+  audience: "このコードを書いたジュニアエンジニア(入社1年目)"
+  tags: [ruby, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次の Ruby コードに対するコードレビューコメントを書いてください。
+    指摘は理由と修正案を添え、重要なものから順に並べてください。相手が萎縮しない書き方にしてください。
+
+    ```ruby
+    def send_report(users)
+      users.each do |u|
+        if u.email != nil && u.email != ""
+          report = Report.where(user_id: u.id).order(created_at: :desc).first
+          if report != nil
+            Mailer.send(u.email, report.body)
+          end
+        end
+      end
+    end
+    ```
+  must_cover:
+    - "ループ内で毎回クエリを発行している(N+1)"
+    - "nil/空文字チェックは present? などで簡潔に書ける"
+    - "メール送信失敗時のエラーハンドリングがない"
+
+- id: review-002
+  category: review
+  audience: "同僚のバックエンドエンジニア"
+  tags: [sql, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次の SQL を含む Pull Request に対するレビューコメントを書いてください。
+    性能と正しさの両面から指摘し、確認してほしい点を質問の形で含めてください。
+
+    ```sql
+    SELECT * FROM orders
+    WHERE DATE(created_at) = '2024-06-01'
+      AND status != 'cancelled';
+    ```
+  must_cover:
+    - "DATE(created_at) で関数を噛ませるとインデックスが効かない"
+    - "SELECT * は必要な列に絞る"
+    - "status が NULL の行は != で除外されてしまうこと"
+
+- id: review-003
+  category: review
+  audience: "フロントエンドチームのメンバー"
+  tags: [javascript, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次の JavaScript コードに対するレビューコメントを書いてください。
+    バグになりうる点を優先し、修正後のコード例を示してください。
+
+    ```javascript
+    async function loadAll(ids) {
+      const results = [];
+      ids.forEach(async (id) => {
+        const res = await fetch(`/api/items/${id}`);
+        results.push(await res.json());
+      });
+      return results;
+    }
+    ```
+  must_cover:
+    - "forEach は async コールバックを待たないため、空配列が返る"
+    - "Promise.all と map で並列に待つ修正案"
+    - "fetch のエラー(res.ok の確認)が扱われていない"
+
+- id: review-004
+  category: review
+  audience: "Python を書く同僚エンジニア"
+  tags: [python, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次の Python コードに対するレビューコメントを書いてください。
+    バグになりうる点を最優先にし、理由と修正案を添えてください。
+
+    ```python
+    def add_tag(item, tag, tags=[]):
+        tags.append(tag)
+        item["tags"] = tags
+        return item
+
+    def load_config(path):
+        f = open(path)
+        return json.load(f)
+    ```
+  must_cover:
+    - "可変オブジェクトをデフォルト引数にすると呼び出し間で共有される"
+    - "ファイルを閉じていない(with 文を使う)"
+    - "修正後のコード例"
+
+- id: review-005
+  category: review
+  audience: "Go を書き始めたチームメンバー"
+  tags: [go, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次の Go コードに対するレビューコメントを書いてください。
+    エラー処理と並行処理の観点を中心に、理由と修正案を示してください。
+
+    ```go
+    func fetchAll(urls []string) []string {
+        var results []string
+        for _, u := range urls {
+            go func() {
+                resp, _ := http.Get(u)
+                body, _ := io.ReadAll(resp.Body)
+                results = append(results, string(body))
+            }()
+        }
+        return results
+    }
+    ```
+  must_cover:
+    - "goroutine の完了を待っていないため空のスライスが返る(sync.WaitGroup など)"
+    - "複数 goroutine から results に同時に append している(データ競合)"
+    - "エラーを無視している。resp が nil のときに panic する"
+    - "resp.Body を Close していない"
+
+- id: review-006
+  category: review
+  audience: "TypeScript でフロントエンドを書く同僚"
+  tags: [typescript, react, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次の React コンポーネントに対するレビューコメントを書いてください。
+    バグと性能の観点で指摘し、修正案を添えてください。
+
+    ```tsx
+    function UserList({ ids }: { ids: string[] }) {
+      const [users, setUsers] = useState<User[]>([]);
+      useEffect(() => {
+        ids.forEach(async (id) => {
+          const u = await fetchUser(id);
+          setUsers([...users, u]);
+        });
+      });
+      return <ul>{users.map((u) => <li>{u.name}</li>)}</ul>;
+    }
+    ```
+  must_cover:
+    - "useEffect に依存配列がなく毎レンダー実行される"
+    - "setUsers がクロージャ内の古い users を参照しており、結果を上書きし合う(関数型更新を使う)"
+    - "リスト要素に key がない"
+    - "アンマウント後の setState や競合状態への配慮"
+
+- id: review-007
+  category: review
+  audience: "SQL を書くバックエンドエンジニア"
+  tags: [sql, security, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次のコードに対するレビューコメントを書いてください。セキュリティ上の問題を最優先にしてください。
+
+    ```python
+    def find_users(conn, name):
+        sql = f"SELECT id, name FROM users WHERE name LIKE '%{name}%'"
+        cur = conn.cursor()
+        cur.execute(sql)
+        return cur.fetchall()
+    ```
+  must_cover:
+    - "文字列結合による SQL インジェクション"
+    - "プレースホルダー(パラメータ化クエリ)への修正例"
+    - "LIKE の % や _ のエスケープ、前方一致でないとインデックスが効かない点"
+
+- id: review-008
+  category: review
+  audience: "シェルスクリプトを書く運用エンジニア"
+  tags: [shell, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次のシェルスクリプトに対するレビューコメントを書いてください。
+    危険な挙動になりうる箇所を優先し、修正案を示してください。
+
+    ```bash
+    #!/bin/bash
+    BACKUP_DIR=$1
+    cd $BACKUP_DIR
+    rm -rf *
+    cp -r /var/data/ .
+    echo "done"
+    ```
+  must_cover:
+    - "引数が空や cd が失敗した場合に、カレントディレクトリで rm -rf * が実行される"
+    - "set -euo pipefail と cd の失敗チェック、変数のクォート"
+    - "引数の存在確認"
+
+- id: review-009
+  category: review
+  audience: "Java を書く同僚"
+  tags: [java, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次の Java コードに対するレビューコメントを書いてください。正しさと可読性の観点で、理由と修正案を添えてください。
+
+    ```java
+    public boolean isSameUser(User a, User b) {
+        if (a.getEmail() == b.getEmail()) {
+            return true;
+        }
+        return false;
+    }
+
+    public List<String> names(List<User> users) {
+        List<String> result = new ArrayList<>();
+        for (int i = 0; i < users.size(); i++) {
+            result.add(users.get(i).getName().toUpperCase());
+        }
+        return result;
+    }
+    ```
+  must_cover:
+    - "文字列の比較に == を使っている(equals を使う。null の考慮)"
+    - "if (cond) return true; else return false; は return cond; に簡略化できる"
+    - "getName() が null の場合の NullPointerException"
+
+- id: review-010
+  category: review
+  audience: "API を設計する同僚"
+  tags: [api, design, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次の REST API 設計案に対するレビューコメントを書いてください。
+    一貫性と使いやすさの観点から指摘し、代替案を示してください。
+
+    ```
+    GET  /getUsers
+    POST /createUser
+    POST /user/delete?id=123
+    GET  /users/123/getOrders
+    POST /updateUserEmail  { "id": 123, "email": "..." }
+    ```
+  must_cover:
+    - "URL に動詞を入れず、HTTP メソッドで操作を表す"
+    - "削除に POST を使っている(DELETE を使う)"
+    - "リソース名の単数・複数の不統一"
+    - "修正後の例"
+
+- id: review-011
+  category: review
+  audience: "テストを書き始めた同僚"
+  tags: [testing, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次のテストコードに対するレビューコメントを書いてください。
+    テストとしての有効性の観点から指摘し、修正案を添えてください。
+
+    ```ruby
+    describe Calculator do
+      it "works" do
+        calc = Calculator.new
+        result = calc.add(1, 2)
+        expect(result).to be_truthy
+        calc.add(2, 3)
+        sleep 1
+      end
+    end
+    ```
+  must_cover:
+    - "be_truthy では結果の正しさを検証できていない(具体的な値を期待する)"
+    - "テスト名が内容を表していない"
+    - "検証されない呼び出しと不要な sleep"
+
+- id: review-012
+  category: review
+  audience: "Dockerfile を書いた同僚"
+  tags: [docker, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次の Dockerfile に対するレビューコメントを書いてください。
+    セキュリティ、イメージサイズ、ビルドキャッシュの観点で指摘し、修正案を示してください。
+
+    ```dockerfile
+    FROM node:latest
+    COPY . /app
+    WORKDIR /app
+    RUN npm install
+    ENV API_KEY=sk-live-abc123
+    CMD node server.js
+    ```
+  must_cover:
+    - "latest タグは再現性がない(バージョンを固定する)"
+    - "秘密情報をイメージに焼き込んでいる"
+    - "package.json を先にコピーして依存インストール層をキャッシュする"
+    - "root で動いている。本番では devDependencies を入れない"
+
+- id: review-013
+  category: review
+  audience: "Terraform を書き始めたインフラ担当"
+  tags: [terraform, iac, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次の Terraform コードに対するレビューコメントを書いてください。
+    セキュリティと運用の観点で指摘し、修正案を示してください。
+
+    ```hcl
+    resource "aws_s3_bucket" "logs" {
+      bucket = "my-logs"
+      acl    = "public-read"
+    }
+
+    resource "aws_db_instance" "main" {
+      instance_class = "db.t3.medium"
+      password       = "Passw0rd!"
+      skip_final_snapshot = true
+    }
+    ```
+  must_cover:
+    - "ログバケットが公開読み取りになっている"
+    - "パスワードがコードに直書きされている(変数やシークレット管理を使う)"
+    - "skip_final_snapshot = true は削除時にデータを失う"
+
+- id: review-014
+  category: review
+  audience: "Pull Request を出した同僚(経験3年程度)"
+  tags: [process, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次の Pull Request に対するレビューコメントを書いてください。コードの中身ではなく、PR の構成と説明に関する指摘をしてください。
+
+    ---
+    タイトル: 修正
+    説明: (なし)
+    変更ファイル: 48ファイル。バグ修正、リファクタリング、新機能の追加、依存ライブラリの更新、整形の変更が混在。
+    ---
+  must_cover:
+    - "目的別に PR を分割する"
+    - "タイトルと説明に変更の目的・背景・確認方法を書く"
+    - "整形だけの変更は別 PR にするとレビューしやすい"
+
+- id: review-015
+  category: review
+  audience: "ログ出力を実装した同僚"
+  tags: [logging, security, review]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    次のコードに対するレビューコメントを書いてください。セキュリティとログの品質の観点で指摘してください。
+
+    ```python
+    def login(request):
+        logger.info(f"login attempt: {request.body}")
+        user = authenticate(request.json["email"], request.json["password"])
+        if not user:
+            logger.error("login failed")
+            return 401
+        logger.info("ok")
+        return 200
+    ```
+  must_cover:
+    - "パスワードを含むリクエストボディをそのままログに出している"
+    - "失敗ログに原因や対象(メールアドレスのマスク等)がなく調査に使えない"
+    - "ログレベルの妥当性(認証失敗は error ではなく warning や info)"

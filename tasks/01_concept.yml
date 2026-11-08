@@ -1,0 +1,210 @@
+- id: concept-001
+  category: concept
+  audience: "Webアプリ開発経験2年程度で、コンテナは使ったことがあるがオーケストレーションは未経験のバックエンドエンジニア"
+  tags: [kubernetes, beginner]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    Kubernetes の Pod、Deployment、Service の関係を説明してください。
+    なぜ Pod を直接作らず Deployment を使うのか、Service が何を解決するのかが分かるようにしてください。
+  must_cover:
+    - "Pod は1つ以上のコンテナをまとめた最小のデプロイ単位である"
+    - "Deployment が Pod のレプリカ数維持とローリングアップデートを担う"
+    - "Pod の IP は再作成で変わるため Service が安定した到達先を提供する"
+
+- id: concept-002
+  category: concept
+  audience: "RDB を日常的に使っているが、トランザクション分離レベルを意識したことがないアプリケーションエンジニア"
+  tags: [database, intermediate]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    トランザクション分離レベルの READ COMMITTED と REPEATABLE READ の違いを、
+    実際のアプリケーションでどんな不具合として現れるかを例にして説明してください。
+  must_cover:
+    - "READ COMMITTED では同一トランザクション内で同じ行を2回読むと値が変わりうる(non-repeatable read)"
+    - "REPEATABLE READ ではトランザクション開始時点のスナップショットを読む"
+    - "分離レベルを上げるとロック競合やシリアライズ失敗の可能性が増えるというトレードオフ"
+
+- id: concept-003
+  category: concept
+  audience: "フロントエンド中心で、認証は既存ライブラリに任せてきたエンジニア"
+  tags: [security, auth]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    OAuth 2.0 の Authorization Code フロー(PKCE あり)の流れを説明してください。
+    各ステップで誰が何を誰に渡すのかと、PKCE が何の攻撃を防ぐのかを明確にしてください。
+  must_cover:
+    - "クライアントが code_verifier を生成し、その派生値 code_challenge を認可リクエストに付ける"
+    - "認可コードをトークンに交換する際に code_verifier を送り、認可サーバーが照合する"
+    - "PKCE は認可コードの横取り(authorization code interception)を防ぐ"
+
+- id: concept-004
+  category: concept
+  audience: "Web アプリ開発者。HTTP は使っているが仕組みを深く考えたことはない"
+  tags: [http, web]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    HTTP/1.1 と HTTP/2 の違いを、Web アプリの体感速度にどう影響するかという観点で説明してください。
+    HTTP/2 にすれば必ず速くなるわけではない理由も含めてください。
+  must_cover:
+    - "HTTP/2 は1つの TCP 接続上で複数リクエストを多重化する"
+    - "HTTP/1.1 では同時接続数の制限やリクエストの順番待ちが起きる(head-of-line blocking)"
+    - "TCP レベルのパケットロスでは HTTP/2 でも全ストリームが止まるため、環境によっては効果が小さい"
+
+- id: concept-005
+  category: concept
+  audience: "JavaScript を書いているが非同期処理を雰囲気で使っているフロントエンドエンジニア"
+  tags: [javascript, async]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    JavaScript のイベントループを説明してください。
+    `setTimeout(fn, 0)` と `Promise.resolve().then(fn)` の実行順序がなぜ違うのかが分かるようにしてください。
+  must_cover:
+    - "コールスタックが空になったときにキューからタスクを取り出して実行する"
+    - "マイクロタスク(Promise)はマクロタスク(setTimeout)より先に処理される"
+    - "重い同期処理が UI の描画をブロックする理由"
+
+- id: concept-006
+  category: concept
+  audience: "インフラ運用を始めたばかりのエンジニア"
+  tags: [network, dns]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    DNS の名前解決の流れを説明してください。
+    ブラウザに URL を入力してから IP アドレスが決まるまでに、どのサーバーがどの順で関わるかと、
+    TTL が「設定変更がすぐ反映されない」現象にどう関係するかを含めてください。
+  must_cover:
+    - "スタブリゾルバ → フルリゾルバ(キャッシュ DNS) → ルート・TLD・権威サーバーの順で問い合わせる"
+    - "各段階でキャッシュされ、TTL が切れるまで古い値が使われる"
+    - "切り替え前に TTL を短くしておくという実務上の対処"
+
+- id: concept-007
+  category: concept
+  audience: "Git をコマンドで使っているが、rebase を怖がっているエンジニア"
+  tags: [git]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    Git の merge と rebase の違いを説明してください。
+    履歴がどう変わるかを図示的に示し、rebase を使ってはいけない状況を明確にしてください。
+  must_cover:
+    - "merge はマージコミットを作り、両方の履歴を残す"
+    - "rebase はコミットを作り直して直線的な履歴にする(コミットハッシュが変わる)"
+    - "他人と共有済みのブランチを rebase すると履歴が食い違い、push や取り込みで問題が起きる"
+
+- id: concept-008
+  category: concept
+  audience: "バックエンドエンジニア。インデックスは「付けると速くなるもの」程度の理解"
+  tags: [database, index]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    RDB の B-tree インデックスがなぜ検索を速くするのかと、複合インデックスで列の順序が重要な理由を説明してください。
+    インデックスを付けても使われないクエリの例を一つ以上挙げてください。
+  must_cover:
+    - "ソート済みの木構造をたどるため、全件走査より少ないページ読み取りで済む"
+    - "複合インデックスは先頭列から順にしか絞り込めない(左端一致)"
+    - "列に関数を適用した条件や、先頭ワイルドカードの LIKE ではインデックスが使われにくい"
+
+- id: concept-009
+  category: concept
+  audience: "コンテナを使い始めたアプリケーションエンジニア"
+  tags: [docker, container]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    Docker コンテナと仮想マシンの違いを説明してください。
+    コンテナが軽量である理由と、その代わりに何を共有しているか、それが運用上どういう意味を持つかを含めてください。
+  must_cover:
+    - "コンテナはホストのカーネルを共有し、VM はゲスト OS ごとにカーネルを持つ"
+    - "namespace と cgroup による分離とリソース制限"
+    - "カーネルを共有するため、隔離の強さは VM より弱いというトレードオフ"
+
+- id: concept-010
+  category: concept
+  audience: "Web API を作っているが TLS は「https にするもの」程度の理解のエンジニア"
+  tags: [security, tls]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    TLS で通信が保護される仕組みを説明してください。
+    公開鍵暗号と共通鍵暗号がそれぞれどの場面で使われるか、サーバー証明書が何を保証しているかを明確にしてください。
+  must_cover:
+    - "ハンドシェイクで鍵交換を行い、その後の通信は共通鍵で暗号化する"
+    - "証明書は認証局の署名により、公開鍵がそのドメインの所有者のものであることを保証する"
+    - "証明書が保証するのはサーバーの身元であり、サイトの安全性や内容の正しさではない"
+
+- id: concept-011
+  category: concept
+  audience: "Web サービスのバックエンドエンジニア。キャッシュは Redis に値を入れる程度"
+  tags: [cache, performance]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    キャッシュの無効化が難しいと言われる理由を説明してください。
+    TTL 方式とイベント駆動の無効化の違い、キャッシュスタンピード(thundering herd)とは何か、その対策を含めてください。
+  must_cover:
+    - "元データの更新とキャッシュの更新の間に不整合の窓ができる"
+    - "TTL 方式は単純だが古いデータを返す期間がある。イベント駆動は正確だが更新経路を全て押さえる必要がある"
+    - "期限切れの瞬間に大量リクエストが元データへ集中する問題と、ロックや期限のばらつきなどの対策"
+
+- id: concept-012
+  category: concept
+  audience: "マイクロサービスの開発に初めて参加するエンジニア"
+  tags: [distributed, messaging]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    分散システムにおける「冪等性」とは何か、なぜ重要かを説明してください。
+    メッセージキューの at-least-once 配信との関係と、API を冪等にする具体的な方法を含めてください。
+  must_cover:
+    - "同じ操作を複数回実行しても結果が1回のときと同じになる性質"
+    - "再送や重複配信が前提の仕組みでは、受け手が冪等でないと二重処理が起きる"
+    - "冪等キー(リクエスト ID)や処理済み記録による重複排除"
+
+- id: concept-013
+  category: concept
+  audience: "Linux サーバーを触るが、プロセスの仕組みは曖昧なエンジニア"
+  tags: [linux, process]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    Linux のプロセスとスレッドの違い、ゾンビプロセスとは何かを説明してください。
+    `ps` で `<defunct>` が表示されたときに何が起きているのか、どう対処するのかが分かるようにしてください。
+  must_cover:
+    - "スレッドはプロセス内でメモリ空間を共有し、プロセスは独立したメモリ空間を持つ"
+    - "ゾンビは終了したが親プロセスが wait で終了状態を回収していないプロセス"
+    - "ゾンビ自体は kill できず、親プロセスに回収させるか親を終了させる"
+
+- id: concept-014
+  category: concept
+  audience: "バッチ処理を書くことが多いバックエンドエンジニア"
+  tags: [database, locking]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    楽観的ロックと悲観的ロックの違いを説明してください。
+    それぞれが向いている状況と、楽観的ロックをバージョン列で実装する方法を含めてください。
+  must_cover:
+    - "悲観的ロックは読み取り時にロックを取り、他の更新を待たせる"
+    - "楽観的ロックは更新時にバージョンを比較し、変わっていれば失敗させる"
+    - "競合が少なければ楽観的、競合が多く失敗のリトライコストが高ければ悲観的が向く"
+
+- id: concept-015
+  category: concept
+  audience: "型のある言語は Java を少し触った程度のエンジニア。TypeScript を学び始めた"
+  tags: [typescript, types]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    TypeScript の構造的型付けとは何かを説明してください。
+    Java などの名前的型付けとの違いと、構造的型付けによって起きる「意図しない代入が通ってしまう」例を含めてください。
+  must_cover:
+    - "型の互換性は名前ではなくプロパティの構造で判定される"
+    - "同じ形のオブジェクトなら別の型名でも代入できる"
+    - "ブランド型などで区別する手法がある"

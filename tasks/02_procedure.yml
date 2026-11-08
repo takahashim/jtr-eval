@@ -1,0 +1,223 @@
+- id: procedure-001
+  category: procedure
+  audience: "macOS を使う Web エンジニア。Homebrew は導入済み"
+  tags: [setup, postgres]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    ローカル開発用に PostgreSQL 16 を Homebrew でインストールし、
+    開発用データベースとユーザーを作成して、アプリから接続確認するまでの手順書を書いてください。
+  must_cover:
+    - "インストールと起動(サービス登録)の手順"
+    - "データベースとロール(ユーザー)の作成"
+    - "接続文字列または psql での接続確認"
+    - "起動していないときの確認方法が一つ以上ある"
+
+- id: procedure-002
+  category: procedure
+  audience: "GitHub を使っているが CI の設定ファイルを自分で書いたことがないエンジニア"
+  tags: [ci, github-actions]
+  constraints:
+    max_chars: 1800
+  prompt: |
+    Node.js プロジェクトで、Pull Request ごとに lint とテストを実行する GitHub Actions ワークフローを
+    追加する手順を書いてください。設定ファイルの例と、動作確認の方法を含めてください。
+  must_cover:
+    - "ワークフローファイルの配置場所(.github/workflows/)"
+    - "pull_request イベントでの起動"
+    - "依存関係のインストールとキャッシュ"
+    - "PR 画面で結果を確認する方法"
+
+- id: procedure-003
+  category: procedure
+  audience: "Linux サーバーの運用担当。systemd は触ったことがある"
+  tags: [ops, tls]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    nginx で配信している既存サイトに Let's Encrypt の TLS 証明書を導入し、自動更新を設定する手順を書いてください。
+    作業前の確認事項と、更新が失敗したときの確認方法も含めてください。
+  must_cover:
+    - "80番ポートが外部から到達可能であることの確認"
+    - "certbot による証明書取得と nginx 設定の反映"
+    - "自動更新の仕組み(timer または cron)と dry-run での確認"
+
+- id: procedure-004
+  category: procedure
+  audience: "Python でスクリプトを書くエンジニア。仮想環境は使ったことがない"
+  tags: [python, setup]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    Python プロジェクトで仮想環境を作り、依存パッケージをファイルで管理し、別のマシンで同じ環境を再現するまでの手順を書いてください。
+    標準ライブラリの venv を使う前提で、よくあるつまずきも一つ以上含めてください。
+  must_cover:
+    - "venv の作成と有効化(OS による違い)"
+    - "依存関係のファイルへの書き出しと、それを使ったインストール"
+    - "仮想環境のディレクトリは Git 管理に含めない"
+
+- id: procedure-005
+  category: procedure
+  audience: "Git は使えるが、複数人開発のブランチ運用は初めてのエンジニア"
+  tags: [git, workflow]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    機能ブランチを作ってから Pull Request がマージされるまでの、一人の開発者としての作業手順を書いてください。
+    main の更新を取り込む手順と、レビュー指摘を受けて修正を追加する手順を含めてください。
+  must_cover:
+    - "main から機能ブランチを作成する"
+    - "作業中に main の更新を取り込む方法(merge または rebase)"
+    - "レビュー指摘への修正を同じブランチにコミットして push すると PR に反映される"
+    - "マージ後のローカルブランチの整理"
+
+- id: procedure-006
+  category: procedure
+  audience: "AWS のコンソールは触れるが IAM の設計はしたことがないエンジニア"
+  tags: [aws, iam]
+  constraints:
+    max_chars: 1800
+  prompt: |
+    AWS で、特定の S3 バケットにだけ読み書きできる IAM ロールを作り、EC2 インスタンスにそのロールを付与して
+    アクセスキーなしでアプリから S3 を使えるようにする手順を書いてください。
+  must_cover:
+    - "最小権限のポリシーを作成し、対象バケットの ARN に限定する"
+    - "EC2 用の信頼ポリシーを持つロールを作成してポリシーを付ける"
+    - "インスタンスプロファイルとして EC2 にアタッチする"
+    - "SDK や CLI が認証情報を自動取得することの確認方法"
+
+- id: procedure-007
+  category: procedure
+  audience: "Web アプリ開発者。本番 DB のスキーマ変更は初めて"
+  tags: [database, migration]
+  constraints:
+    max_chars: 1800
+  prompt: |
+    稼働中の Web サービスで、利用者数の多いテーブルに NOT NULL の列を追加する作業手順を書いてください。
+    サービスを止めずに行う前提で、ロックを避ける工夫とロールバック方法を含めてください。
+  must_cover:
+    - "まず NULL 許容で列を追加し、既定値の埋め戻しを分割して行う"
+    - "アプリ側で新列への書き込みを先に始める(デプロイ順序)"
+    - "埋め戻し完了後に NOT NULL 制約を付ける"
+    - "各段階での切り戻し方法"
+
+- id: procedure-008
+  category: procedure
+  audience: "Linux サーバーに SSH で入って作業する開発者"
+  tags: [ssh, security]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    新しいサーバーに対して、SSH の鍵認証を設定し、パスワード認証を無効化し、
+    ローカルの設定ファイルで短い名前で接続できるようにする手順を書いてください。
+    閉め出されないための確認手順を含めてください。
+  must_cover:
+    - "鍵ペアの生成と公開鍵のサーバーへの配置"
+    - "パスワード認証を無効化する前に、別セッションで鍵認証の接続を確認する"
+    - "sshd 設定変更後の再読み込み"
+    - "ローカルの ~/.ssh/config に Host エントリを追加する"
+
+- id: procedure-009
+  category: procedure
+  audience: "Docker は使えるが本番用のイメージ作成は初めてのエンジニア"
+  tags: [docker, build]
+  constraints:
+    max_chars: 1800
+  prompt: |
+    Node.js の Web アプリを本番配布用の Docker イメージにする手順を書いてください。
+    マルチステージビルドでイメージを小さくし、root 以外のユーザーで動かし、イメージサイズと起動を確認するまでを含めてください。
+  must_cover:
+    - "ビルド用ステージと実行用ステージを分け、実行用には必要なファイルだけコピーする"
+    - "依存関係のインストール層をソース変更の前に置いてキャッシュを効かせる"
+    - "非 root ユーザーでの実行"
+    - ".dockerignore で不要ファイルを除外する"
+
+- id: procedure-010
+  category: procedure
+  audience: "個人開発者。独自ドメインでの公開は初めて"
+  tags: [dns, deploy]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    取得済みの独自ドメインを、静的サイトホスティング(任意のサービスを一つ選んでよい)で公開しているサイトに向け、
+    HTTPS で表示されるまでの手順を書いてください。反映待ちの間に何を確認すればよいかも含めてください。
+  must_cover:
+    - "ホスティング側でカスタムドメインを追加する"
+    - "DNS に A/ALIAS または CNAME レコードを設定する"
+    - "証明書の発行とドメイン所有確認"
+    - "dig や nslookup で反映を確認する方法"
+
+- id: procedure-011
+  category: procedure
+  audience: "テストを書き始めたばかりのバックエンドエンジニア"
+  tags: [testing, database]
+  constraints:
+    max_chars: 1800
+  prompt: |
+    DB に依存するアプリケーションの自動テストで、テスト用 DB をコンテナで起動し、
+    各テストがクリーンな状態から始まるようにする手順を書いてください。言語やフレームワークは一つ選んでよいです。
+  must_cover:
+    - "テスト用 DB をコンテナで起動し、接続先を環境変数で切り替える"
+    - "テストごとにトランザクションのロールバックまたはテーブルの初期化で状態を戻す"
+    - "DB の起動完了を待ってからテストを始める"
+
+- id: procedure-012
+  category: procedure
+  audience: "チームにレビュー文化を持ち込みたいリードエンジニア"
+  tags: [process, review]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    チームでコードレビューの運用を始めるための手順を書いてください。
+    レビュー依頼の出し方、レビュアーの決め方、承認とマージの条件、滞留を防ぐ取り決めを含めてください。
+  must_cover:
+    - "PR の大きさの目安と説明文に書く内容"
+    - "レビュアーの割り当て方法"
+    - "マージ条件(承認数、CI 通過)"
+    - "レビュー待ち時間の目安と滞留時の対応"
+
+- id: procedure-013
+  category: procedure
+  audience: "Web サービスの運用担当。監視ツールは未導入"
+  tags: [monitoring, ops]
+  constraints:
+    max_chars: 1800
+  prompt: |
+    Web サービスに最低限の監視を入れる手順を書いてください。
+    外形監視、サーバーリソース、アプリケーションのエラー率の3つを対象に、アラートの通知先設定まで含めてください。
+    ツールは任意に選んでよいです。
+  must_cover:
+    - "外形監視(死活・応答時間)の設定"
+    - "CPU・メモリ・ディスクなどのリソース監視"
+    - "エラー率やレイテンシなどアプリ指標の収集"
+    - "アラートのしきい値と通知先の設定"
+
+- id: procedure-014
+  category: procedure
+  audience: "ライブラリを初めて公開するエンジニア"
+  tags: [release, packaging]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    自作ライブラリをパッケージレジストリ(npm か RubyGems か PyPI のいずれか)に初めて公開する手順を書いてください。
+    バージョン番号の付け方、公開前の確認、公開後にミスに気づいたときの対応を含めてください。
+  must_cover:
+    - "パッケージのメタデータ(名前、バージョン、ライセンス)の設定"
+    - "公開前にローカルでパッケージ内容を確認する"
+    - "セマンティックバージョニングの考え方"
+    - "公開済みバージョンは基本的に差し替えず、新しいバージョンで修正する"
+
+- id: procedure-015
+  category: procedure
+  audience: "Web アプリ開発者。障害対応の当番に初めて入る"
+  tags: [incident, ops]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    本番障害のアラートを受け取ってから対応を終えるまでの手順を書いてください。
+    初動で確認すること、連絡の仕方、暫定対処と恒久対処の分け方、事後にやることを含めてください。
+  must_cover:
+    - "影響範囲の確認と関係者への第一報"
+    - "直近の変更(デプロイ、設定変更)の確認"
+    - "切り戻しなどの暫定対処を優先し、根本原因の調査は後に回す"
+    - "復旧後に時系列を記録し、振り返りを行う"

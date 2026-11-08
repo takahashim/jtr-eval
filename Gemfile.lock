@@ -1,0 +1,39 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    anthropic (2.6.0)
+      base64 (~> 0.1)
+      connection_pool (>= 2, < 4)
+      opentelemetry-api (>= 1.2.4, < 2)
+      standardwebhooks (~> 1.0)
+    base64 (0.2.0)
+    connection_pool (3.0.2)
+    logger (1.6.0)
+    minitest (5.20.0)
+    opentelemetry-api (1.11.1)
+      logger
+    standardwebhooks (1.1.0)
+
+PLATFORMS
+  ruby
+  x86_64-linux
+
+DEPENDENCIES
+  anthropic (~> 2.6)
+  minitest (~> 5.0)
+
+CHECKSUMS
+  anthropic (2.6.0)
+  base64 (0.2.0)
+  bundler (4.0.18) sha256=02d9a17429de1847b4e0c9f27a9ee4b20c0a74c0a641b4e77195d6019e3618ac
+  connection_pool (3.0.2)
+  logger (1.6.0)
+  minitest (5.20.0)
+  opentelemetry-api (1.11.1)
+  standardwebhooks (1.1.0)
+
+RUBY VERSION
+  ruby 3.3.6
+
+BUNDLED WITH
+  4.0.18

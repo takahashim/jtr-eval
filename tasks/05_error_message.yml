@@ -1,0 +1,267 @@
+- id: error-001
+  category: error_message
+  audience: "Git を日常的に使うが内部の仕組みには詳しくないエンジニア"
+  tags: [git]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    次のエラーの意味と対処を説明してください。
+
+    ```
+    ! [rejected]        main -> main (fetch first)
+    error: failed to push some refs to 'github.com:example/app.git'
+    hint: Updates were rejected because the remote contains work that you do not have locally.
+    ```
+  must_cover:
+    - "リモートに自分の手元にないコミットがあるため拒否されている"
+    - "fetch/pull して統合してから push する"
+    - "force push は他人のコミットを消す危険があるので安易に使わない"
+
+- id: error-002
+  category: error_message
+  audience: "TypeScript を使い始めて数か月のフロントエンドエンジニア"
+  tags: [typescript]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    次の TypeScript のコンパイルエラーの意味と、典型的な修正方法を説明してください。
+
+    ```
+    error TS2345: Argument of type 'string | undefined' is not assignable to parameter of type 'string'.
+      Type 'undefined' is not assignable to type 'string'.
+    ```
+  must_cover:
+    - "値が undefined になりうる型を、undefined を許さない引数に渡している"
+    - "条件分岐や早期 return による絞り込み(narrowing)"
+    - "非 null アサーション(!)は安全性を下げるので最後の手段"
+
+- id: error-003
+  category: error_message
+  audience: "Python でデータ処理スクリプトを書くエンジニア"
+  tags: [python]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    次の Python のエラーの意味と原因の見つけ方を説明してください。
+
+    ```
+    UnicodeDecodeError: 'utf-8' codec can't decode byte 0x93 in position 12: invalid start byte
+    ```
+  must_cover:
+    - "ファイルの実際のエンコーディングと読み込み時の指定が一致していない"
+    - "open() の encoding 引数で指定する(Shift_JIS/cp932 など)"
+    - "エンコーディングを調べる方法が一つ以上ある"
+
+- id: error-004
+  category: error_message
+  audience: "Node.js を使い始めたエンジニア"
+  tags: [nodejs]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    次のエラーの意味と原因の見つけ方、対処を説明してください。
+
+    ```
+    Error: listen EADDRINUSE: address already in use :::3000
+    ```
+  must_cover:
+    - "ポート 3000 を別のプロセスが使用している"
+    - "使用中のプロセスを特定する方法(lsof や netstat など)"
+    - "プロセスの終了、または別ポートの使用"
+
+- id: error-005
+  category: error_message
+  audience: "Docker を使う開発者"
+  tags: [docker]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    次のエラーの意味と対処を説明してください。
+
+    ```
+    docker: Error response from daemon: Conflict. The container name "/app" is already in use by container "3f2a...".
+    You have to remove (or rename) that container to be able to reuse that name.
+    ```
+  must_cover:
+    - "同じ名前のコンテナ(停止中を含む)が既に存在する"
+    - "docker ps -a で確認し、docker rm で削除するか別名を使う"
+    - "再実行のたびに起きるなら --rm を付ける選択肢"
+
+- id: error-006
+  category: error_message
+  audience: "Java/Kotlin で開発するエンジニア"
+  tags: [java]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    次の例外の意味と、原因箇所の見つけ方、防ぎ方を説明してください。
+
+    ```
+    java.lang.NullPointerException: Cannot invoke "String.length()" because "name" is null
+        at com.example.UserService.validate(UserService.java:42)
+    ```
+  must_cover:
+    - "変数 name が null の状態でメソッドを呼んでいる"
+    - "スタックトレースの先頭行とファイル名・行番号の読み方"
+    - "null チェック、Optional、null を返さない設計などの防ぎ方"
+
+- id: error-007
+  category: error_message
+  audience: "PostgreSQL を使う Web アプリ開発者"
+  tags: [postgres, database]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    次のエラーの意味と原因、対処を説明してください。
+
+    ```
+    ERROR:  duplicate key value violates unique constraint "users_email_key"
+    DETAIL:  Key (email)=(taro@example.com) already exists.
+    ```
+  must_cover:
+    - "email 列のユニーク制約に反する行を挿入しようとした"
+    - "重複の事前チェックには競合の隙間があり、制約違反のハンドリングが必要"
+    - "ON CONFLICT などの upsert の選択肢"
+
+- id: error-008
+  category: error_message
+  audience: "Web API を実装しているバックエンドエンジニア"
+  tags: [http, web]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    ブラウザのコンソールに出た次のメッセージの意味と、サーバー側で何を直せばよいかを説明してください。
+
+    ```
+    Access to fetch at 'https://api.example.com/items' from origin 'https://app.example.com' has been blocked by CORS policy:
+    Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+    ```
+  must_cover:
+    - "プリフライト(OPTIONS)への応答に許可ヘッダーがない"
+    - "サーバーが Access-Control-Allow-Origin などを返すよう設定する"
+    - "許可するオリジンを必要なものに限定する"
+
+- id: error-009
+  category: error_message
+  audience: "Go を書き始めたエンジニア"
+  tags: [go]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    次の Go のコンパイルエラーの意味と修正方法を説明してください。
+
+    ```
+    ./main.go:12:2: declared and not used: result
+    ./main.go:15:9: cannot use x (variable of type int) as string value in argument to fmt.Println: ...
+    ```
+    ※2つ目は型の不一致の例として扱ってください。
+  must_cover:
+    - "Go では未使用のローカル変数がコンパイルエラーになる"
+    - "一時的に使わない場合は _ に代入するか削除する"
+    - "型の暗黙変換がないため明示的な変換や適切な型の値が必要"
+
+- id: error-010
+  category: error_message
+  audience: "Linux サーバーで作業する開発者"
+  tags: [linux, permission]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    次のエラーの意味と、安全な対処を説明してください。
+
+    ```
+    bash: /var/log/app/app.log: Permission denied
+    ```
+  must_cover:
+    - "実行ユーザーにそのファイルまたはディレクトリへの書き込み権限がない"
+    - "ls -l で所有者とパーミッションを確認する"
+    - "chmod 777 は避け、所有者やグループの変更、適切なユーザーでの実行で対処する"
+
+- id: error-011
+  category: error_message
+  audience: "npm を使うフロントエンドエンジニア"
+  tags: [npm, nodejs]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    次のエラーの意味と対処を説明してください。
+
+    ```
+    npm ERR! code ERESOLVE
+    npm ERR! ERESOLVE unable to resolve dependency tree
+    npm ERR! peer react@"^17.0.0" from some-ui-lib@2.1.0
+    ```
+  must_cover:
+    - "ライブラリが要求する peer dependency のバージョンと、インストール済みのバージョンが合わない"
+    - "対応バージョンのライブラリに変える、または React 側のバージョンを合わせる"
+    - "--legacy-peer-deps は回避策であり、実行時の不整合リスクが残る"
+
+- id: error-012
+  category: error_message
+  audience: "Rails で開発するエンジニア"
+  tags: [rails, ruby]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    次のエラーの意味と対処を説明してください。
+
+    ```
+    ActiveRecord::PendingMigrationError: Migrations are pending. To resolve this issue, run: bin/rails db:migrate RAILS_ENV=development
+    ```
+  must_cover:
+    - "未適用のマイグレーションファイルがある(他人の変更を取り込んだ直後に多い)"
+    - "db:migrate を実行する"
+    - "スキーマファイルの差分が出た場合の扱い"
+
+- id: error-013
+  category: error_message
+  audience: "Kubernetes を使い始めたエンジニア"
+  tags: [kubernetes]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    `kubectl describe pod` に出た次のイベントの意味と対処を説明してください。
+
+    ```
+    Warning  FailedScheduling  default-scheduler  0/3 nodes are available: 3 Insufficient memory.
+    ```
+  must_cover:
+    - "どのノードにも要求メモリ(requests)を満たす空きがない"
+    - "requests の見直し、不要な Pod の整理、ノード追加のいずれか"
+    - "requests と limits の違い"
+
+- id: error-014
+  category: error_message
+  audience: "外部 API を呼ぶアプリを開発しているエンジニア"
+  tags: [http, api]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    外部 API から次のレスポンスが返ってきました。意味と、アプリ側で行うべき対処を説明してください。
+
+    ```
+    HTTP/1.1 429 Too Many Requests
+    Retry-After: 30
+    {"error": "rate limit exceeded"}
+    ```
+  must_cover:
+    - "一定時間内のリクエスト数が上限を超えた"
+    - "Retry-After に従って待ってから再試行する"
+    - "リクエスト頻度の制御(キューイング、バックオフ、キャッシュ)"
+
+- id: error-015
+  category: error_message
+  audience: "TLS 証明書を扱う運用担当者"
+  tags: [tls, curl]
+  constraints:
+    max_chars: 1000
+  prompt: |
+    次のエラーの意味と原因候補、確認手順を説明してください。
+
+    ```
+    curl: (60) SSL certificate problem: unable to get local issuer certificate
+    ```
+  must_cover:
+    - "サーバー証明書を検証するための中間証明書または CA 証明書がクライアント側で見つからない"
+    - "サーバーが中間証明書を送っていない可能性と、クライアントの CA ストアの問題の両方を疑う"
+    - "-k で検証を無効化するのは原因特定のための一時的な手段にとどめる"

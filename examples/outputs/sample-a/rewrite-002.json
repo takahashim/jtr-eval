@@ -1,0 +1,9 @@
+{
+  "task_id": "rewrite-002",
+  "system": "sample-a",
+  "text": "指定した `id` のユーザーを返します。\n\n| 状況 | レスポンス |\n|---|---|\n| ユーザーが存在しない | 404 |\n| 未認証 | 401 |\n\n削除済みのユーザーも取得したい場合は、クエリパラメータ `include_deleted=true` を付けてください。\n",
+  "model": "sample",
+  "stop_reason": "ok",
+  "usage": null,
+  "generated_at": "2026-11-08T00:00:00Z"
+}

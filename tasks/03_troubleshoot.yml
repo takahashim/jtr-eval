@@ -1,0 +1,213 @@
+- id: troubleshoot-001
+  category: troubleshoot
+  audience: "Rails アプリを運用しているバックエンドエンジニア"
+  tags: [rails, database]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    本番環境で断続的に `ActiveRecord::ConnectionTimeoutError: could not obtain a connection from the pool within 5.000 seconds`
+    が発生しています。原因の切り分け方と、代表的な原因ごとの対処を説明してください。
+  must_cover:
+    - "プールサイズとスレッド数(Puma のスレッド等)の関係を確認する"
+    - "接続を長時間保持する処理(外部 API 呼び出しをトランザクション内で行う等)の洗い出し"
+    - "DB 側の max_connections との兼ね合い"
+
+- id: troubleshoot-002
+  category: troubleshoot
+  audience: "Docker で開発環境を構築している Web エンジニア"
+  tags: [docker, network]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    docker compose で立ち上げたアプリコンテナから DB コンテナに接続できず、
+    `connection refused` になります。考えられる原因と確認手順を、確認すべき順番で説明してください。
+  must_cover:
+    - "接続先ホスト名にサービス名を使っているか(localhost ではない)"
+    - "DB の起動完了前にアプリが接続している可能性(depends_on だけでは待たない)"
+    - "DB が待ち受けているアドレスとポートの確認"
+
+- id: troubleshoot-003
+  category: troubleshoot
+  audience: "フロントエンドエンジニア。ブラウザの開発者ツールは使える"
+  tags: [web, cors]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    ブラウザから API を呼ぶと CORS エラーになります。エラーメッセージの読み方と、
+    サーバー側・クライアント側それぞれで確認すべき点を説明してください。
+  must_cover:
+    - "エラーはブラウザが出しており、サーバーにはリクエストが届いている場合があること"
+    - "プリフライト(OPTIONS)リクエストの有無と、それが起きる条件"
+    - "Access-Control-Allow-Origin と認証情報(credentials)を使う場合の制約"
+
+- id: troubleshoot-004
+  category: troubleshoot
+  audience: "Node.js のサービスを運用しているバックエンドエンジニア"
+  tags: [nodejs, memory]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    Node.js のサービスが数日稼働するとメモリ使用量が増え続け、最終的に OOM で再起動されます。
+    メモリリークかどうかを判断し、原因箇所を特定する手順を説明してください。
+  must_cover:
+    - "GC 後のヒープ使用量が右肩上がりかどうかで判断する"
+    - "ヒープスナップショットを時間差で取って比較する"
+    - "典型的な原因(グローバルなキャッシュや Map の肥大化、解除されないリスナー)"
+
+- id: troubleshoot-005
+  category: troubleshoot
+  audience: "Web アプリのバックエンドエンジニア。SQL のチューニング経験は浅い"
+  tags: [database, performance]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    ある一覧画面の API だけ応答に3秒以上かかります。DB が原因だと疑っています。
+    遅いクエリを特定し、原因を切り分け、改善するまでの手順を説明してください。
+  must_cover:
+    - "スロークエリログや APM で対象クエリを特定する"
+    - "EXPLAIN で実行計画を見て全件走査や行数見積もりを確認する"
+    - "インデックス追加、N+1 の解消、取得列の削減などの対処"
+
+- id: troubleshoot-006
+  category: troubleshoot
+  audience: "Kubernetes でアプリを動かし始めたエンジニア"
+  tags: [kubernetes]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    Pod が `CrashLoopBackOff` になっています。原因を特定する手順を、使うコマンドとその見方とともに説明してください。
+  must_cover:
+    - "kubectl describe pod でイベントと終了コードを確認する"
+    - "kubectl logs --previous で前回のコンテナのログを見る"
+    - "典型的な原因(起動時の設定不足、依存サービスへの接続失敗、liveness probe の失敗、メモリ上限)"
+
+- id: troubleshoot-007
+  category: troubleshoot
+  audience: "GitHub Actions で CI を回しているエンジニア"
+  tags: [ci, flaky]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    CI のテストが、同じコードなのに時々失敗します(いわゆる flaky test)。
+    原因の種類ごとの切り分け方と、再現させるためのコツ、恒久的な対処方針を説明してください。
+  must_cover:
+    - "テスト間の状態共有や実行順序への依存"
+    - "時刻・乱数・非同期待ちのタイムアウトなどの非決定性"
+    - "ランダム順実行や繰り返し実行で再現させる"
+    - "一時的な retry は根本対処ではないこと"
+
+- id: troubleshoot-008
+  category: troubleshoot
+  audience: "Linux サーバーの運用担当"
+  tags: [linux, disk]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    サーバーで `No space left on device` が出ていますが、`df -h` ではまだ空き容量があります。
+    考えられる原因と確認手順を説明してください。
+  must_cover:
+    - "inode の枯渇(df -i で確認)"
+    - "削除済みだがプロセスが開いたままのファイル(lsof で確認)"
+    - "確認しているファイルシステムやマウントポイントが別である可能性"
+
+- id: troubleshoot-009
+  category: troubleshoot
+  audience: "Web アプリの開発者。ログイン機能を実装中"
+  tags: [web, cookie]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    ログイン後にセッション Cookie が保存されず、毎回ログイン画面に戻されます。
+    開発環境(localhost)では動いていたのに、ステージング環境でだけ起きます。原因候補と確認手順を説明してください。
+  must_cover:
+    - "Secure 属性と HTTPS の有無"
+    - "SameSite 属性とクロスサイト(別ドメイン・別ポート)での送信制限"
+    - "Domain/Path 属性の不一致"
+    - "開発者ツールの Application/Network タブで Set-Cookie が拒否されていないか確認する"
+
+- id: troubleshoot-010
+  category: troubleshoot
+  audience: "Python でデータ処理を行うエンジニア"
+  tags: [python, dependency]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    ローカルでは動いていた Python スクリプトが、別の環境で `ImportError` や `AttributeError` を出します。
+    依存ライブラリのバージョン差が原因だと疑っています。確認と解決の手順を説明してください。
+  must_cover:
+    - "両環境でインストール済みバージョンを比較する"
+    - "依存関係をバージョン固定して再現可能にする"
+    - "Python 本体のバージョン差も疑う"
+
+- id: troubleshoot-011
+  category: troubleshoot
+  audience: "外部 API を呼ぶバックエンドを運用しているエンジニア"
+  tags: [http, timeout]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    外部 API 呼び出しが時々タイムアウトし、それに引きずられて自サービス全体が遅くなります。
+    原因の切り分けと、自サービスへの影響を抑える設計上の対処を説明してください。
+  must_cover:
+    - "タイムアウト値が設定されているか、妥当か(接続と読み取りの区別)"
+    - "外部側の問題か自側のネットワーク・DNS の問題かの切り分け"
+    - "サーキットブレーカー、リトライの上限、非同期化などの対処"
+
+- id: troubleshoot-012
+  category: troubleshoot
+  audience: "フロントエンドエンジニア"
+  tags: [javascript, build]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    フロントエンドのビルドは成功するのに、本番環境でだけ画面が真っ白になります。
+    開発環境では問題ありません。原因候補と確認の順番を説明してください。
+  must_cover:
+    - "ブラウザのコンソールとネットワークタブでエラーと 404 を確認する"
+    - "公開パス(base path)やアセットの URL の不一致"
+    - "環境変数が本番ビルドに埋め込まれていない"
+    - "本番のみの最適化(minify)で壊れるコードの可能性"
+
+- id: troubleshoot-013
+  category: troubleshoot
+  audience: "Rails や Django などのフレームワークで開発するエンジニア"
+  tags: [database, migration]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    本番へのデプロイ中にマイグレーションが途中で失敗し、アプリが起動しなくなりました。
+    状況の確認と復旧の手順、再発防止のために次から変えるべきことを説明してください。
+  must_cover:
+    - "どのマイグレーションまで適用されたかを確認する"
+    - "トランザクション対応の有無で、中途半端な状態になりうる"
+    - "ロールバックまたは前のバージョンへの切り戻し"
+    - "マイグレーションとアプリのデプロイを分離する、後方互換を保つ"
+
+- id: troubleshoot-014
+  category: troubleshoot
+  audience: "Web サービスの開発者。負荷対策は初めて"
+  tags: [performance, load]
+  constraints:
+    max_chars: 1500
+  prompt: |
+    アクセスが増えた時間帯だけ、API のレスポンスが急に遅くなります。CPU 使用率は高くありません。
+    ボトルネックの候補と、どこから調べるべきかを説明してください。
+  must_cover:
+    - "DB の接続数やロック待ち"
+    - "外部 API や I/O 待ち"
+    - "ワーカー数やスレッドプールの上限"
+    - "どの層で時間を使っているかを計測してから対処する"
+
+- id: troubleshoot-015
+  category: troubleshoot
+  audience: "ログ基盤を持つチームの開発者"
+  tags: [logging, debugging]
+  constraints:
+    max_chars: 1200
+  prompt: |
+    ユーザーから「特定の操作でエラーになる」と報告がありましたが、手元では再現しません。
+    ログから原因に迫る手順と、再現しない場合に集めるべき情報を説明してください。
+  must_cover:
+    - "ユーザー・時刻・リクエスト ID でログを絞り込む"
+    - "環境・ブラウザ・データの差分を疑う"
+    - "再現しない場合に追加するログや計測"

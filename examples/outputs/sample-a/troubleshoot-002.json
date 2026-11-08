@@ -1,0 +1,9 @@
+{
+  "task_id": "troubleshoot-002",
+  "system": "sample-a",
+  "text": "次の順で確認してください。\n\n1. **接続先のホスト名**: `localhost` ではなく、compose のサービス名(例: `db`)を指定しているか確認します。コンテナごとにネットワーク名前空間が分かれているため、`localhost` はアプリコンテナ自身を指します。\n2. **起動タイミング**: `depends_on` はコンテナの起動順しか保証しません。DB が接続を受け付ける前にアプリが接続していないか、`docker compose logs db` で起動完了のログを確認します。必要なら `healthcheck` と `condition: service_healthy` を使います。\n3. **待ち受けアドレスとポート**: DB が `0.0.0.0` で待ち受けているか、ポート番号が合っているかを `docker compose exec db ss -ltn` などで確認します。\n",
+  "model": "sample",
+  "stop_reason": "ok",
+  "usage": null,
+  "generated_at": "2026-11-08T00:00:00Z"
+}
